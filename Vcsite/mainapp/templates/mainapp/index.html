@@ -10,9 +10,11 @@
   <meta name="author" content="">
 
   <title>JangHyukJin</title>
-
   <!-- Bootstrap Core CSS -->
   <link href='{% static "mainapp/vendor/bootstrap/css/bootstrap.min.css" %}' rel="stylesheet">
+  <style type="text/css">
+      canvas{border: 1px solid black};
+  </style>
 
   <!-- Custom Fonts -->
   <link href='{% static "mainapp/vendor/fontawesome-free/css/all.min.css" %}' rel="stylesheet" type="text/css">
@@ -89,6 +91,13 @@
               </div>
           </div>
       </form>
+      <div>
+          <canvas id="canvas" width="500" height="500">
+
+          </canvas>
+          <button onclick="fromDataURL()">이미지로 변환-></button>
+          <canvas id="copycanvas" width="500" height="500"></canvas>
+      </div>
   </section>
 
   <!-- Services -->
@@ -263,7 +272,8 @@
 
   <!-- smooth scroll function -->
   <script src='{% static "mainapp/js/stylish-portfolio.js" %}'></script>
-
+  <script src='{% static "mainapp/js/canvas.js" %}'></script>
+  
 
 </body>
 
