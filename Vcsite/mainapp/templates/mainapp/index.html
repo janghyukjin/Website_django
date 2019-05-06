@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-
+  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
@@ -81,23 +81,84 @@
     </div>
       <form action="http://localhost/upload.php" method="post" enctype="multipart/form-data">
           <div class="filebox preview-image">
-              <style>
-                  .centered {display: table;margin-left: auto;margin-right: auto;}
-              </style>
-              <div class="center">
-                  <input class="upload-name" value="파일선택" disabled="disabled" >
-                  <label for="input-file">업로드</label>
-                  <input type="file" id="input-file" class="upload-hidden">
-              </div>
+              <center>
+                <style>
+                    .centered {display: table;margin-left: auto;margin-right: auto;}
+                </style>
+                <div class="center">
+                   <input class="upload-name" value="파일선택" disabled="disabled" >
+                   <label for="input-file">업로드</label>
+                   <input type="file" id="input-file" class="upload-hidden">
+                </div>
+              </center>
           </div>
       </form>
       <div>
-          <canvas id="canvas" width="500" height="500">
-
-          </canvas>
-          <button onclick="fromDataURL()">이미지로 변환-></button>
-          <canvas id="copycanvas" width="500" height="500"></canvas>
+          <center>
+              <canvas id="canvas" width="500" height="500">
+              </canvas>
+            <button onclick="fromDataURL()">이미지로 변환-></button>
+            <canvas id="copycanvas" width="500" height="500"></canvas>
+          </center>
       </div>
+
+      <form action="{% url 'mainapp:upload' %}" method="post" id="file-upload-form" enctype="multipart/form-data">{% csrf_token %}
+          <input type="file" name="file" id="id_file" />
+          <button type="submit" class="btn btn-primary" id='upload-btn'>Upload</button>
+      </form>
+      <script>
+
+           function upload(event) {
+               event.preventDefault();
+               var data = new FormData($('form').get(0));
+               $.ajax({
+                   url: $(this).attr('action'),
+                   type: $(this).attr('method'),
+                   data: data,
+                   cache: false,
+                   processData: false,
+                   contentType: false,
+                   success: function(data) {
+                       alert('success');
+                       alert(data);
+                   },
+                   error:function(request,status,error){
+                       alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+                   }
+               });
+               return false;
+           }
+           $(function() {
+               $('form').submit(upload);
+           });
+
+      </script>
+
+      <script>
+
+          /*
+          <form id="form" action="127.0.0.1:8000/mainapp" method="post" enctype="multipart/form-data">
+        <input type="file" name="uploadfile" />
+        <input type="button" id="uploadbutton" value="클릭" />
+      </form>
+          $(function(){
+              $("#uploadbutton").click(function(){
+                  var form = $('form')[0];
+                  var formData = new FormData(form);
+                  $.ajax({
+                      url: '127.0.0.1:8000/mainapp',
+                      processData: false,
+                      contentType: false,
+                      data: formData,
+                      type: 'POST',
+                      success: function(){
+                          alert("업로드 성공!!");
+                      }
+                  });
+              });
+          })*/
+
+      </script>
   </section>
 
   <!-- Services -->
@@ -273,7 +334,7 @@
   <!-- smooth scroll function -->
   <script src='{% static "mainapp/js/stylish-portfolio.js" %}'></script>
   <script src='{% static "mainapp/js/canvas.js" %}'></script>
-  
+
 
 </body>
 
