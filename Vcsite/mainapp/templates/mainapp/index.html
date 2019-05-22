@@ -24,6 +24,7 @@
   <!-- Custom CSS -->
   <link href='{% static "mainapp/css/stylish-portfolio.css" %}' rel="stylesheet">
 
+
 </head>
 
 <body id="page-top">
@@ -54,7 +55,16 @@
       </li>
     </ul>
   </nav>
-
+  <div class="preview-bar bg-white fixed-top py-2 border-bottom-primary">
+    <div class="container-fluid h-100">
+        <div class="row align-items-center justify-content-between h-100">
+            <div class="col">
+                <i class="fab fa-github text-github small"></i>
+                <a class="small" href="https://github.com/janghyukjin">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+  </div>
   <!-- Header -->
   <header class="masthead d-flex">
     <div class="container text-center my-auto">
@@ -97,23 +107,101 @@
           <center>
               <canvas id="canvas" width="500" height="500">
               </canvas>
-            <button onclick="fromDataURL()">이미지로 변환-></button>
+
+              <button onclick="fromDataURL()">이미지로 변환-></button>
+
+              <script>
+                  function fromDataURL(){
+                      var copycanvas = document.getElementById('copycanvas');
+                      var copyContext = copycanvas.getContext("2d");
+                      var image = new Image();
+                      var dataUrl = canvas.toDataURL();
+                      alert(dataUrl);
+                      $.ajax({
+                          url: "{% url 'mainapp:send' %}",
+                          type: 'POST',
+                          crossOrigin : 'anonnymous',
+                          data: {'imgBase64': dataUrl},
+                          dataType:'text',
+                          success: function(data) {
+                              alert('success');
+                              alert(data);
+                              },
+                          error:function(request,status,error){
+                              alert("실패");
+                              alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+                          }
+                      });
+                      var img = document.getElementById('dfhjdl');
+                      img.src = "media/prison.jpg";
+                      copyContext.drawImage(img,10,10);
+
+                  }
+
+
+
+              </script>
+              <input type="hidden" id="testInput"/>
+
             <canvas id="copycanvas" width="500" height="500"></canvas>
+              <img id="dfhjdl" src="#" style="display: none;"/>
           </center>
       </div>
-
-      <form action="{% url 'mainapp:upload' %}" method="post" id="file-upload-form" enctype="multipart/form-data">{% csrf_token %}
-          <input type="file" name="file" id="id_file" />
-          <button type="submit" class="btn btn-primary" id='upload-btn'>Upload</button>
+      <input type="image" id="image" src="/media/prison.jpg" />
+      <a href="{% url 'mainapp:download' %}">click here..</a>
+      <form>
+         <input type="button" onclick="uploadCanvasData()" value="Click me" />
       </form>
+
+      <form action="{% url 'mainapp:send' %}" method="post" name="imageForm1" id="canvas-upload-form" enctype="multipart/form-data" novalidate>{% csrf_token %}
+          <button type="submit" class="btn btn-primary" name="uploadcanvas" id='upload-btn' value="image">Send</button>
+      </form>
+
+
+
+      <script>
+           /*function upload(event) {
+               event.preventDefault();
+               console.log("씨발!!")
+               var img = new uploadCanvasData();
+               var data = new FormData($('#canvas-upload-form').get(0));
+               $.ajax({
+                   //url: $(this).attr('action'),
+                   //type: $(this).attr('method'),
+                   url: {% url 'mainapp:send' %},
+                   type: 'POST',
+                   //data: { "imgBase64": image.src },
+                   data: img,
+                   cache: false,
+                   processData: false,
+                   contentType: false,
+                   success: function(data) {
+                       alert('success');
+                       alert(data);
+                   },
+                   error:function(request,status,error){
+                       alert("실패");
+                       alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+                   }
+               });
+               return false;
+           }
+           $(function() {
+               $('#canvas-upload-form').submit(upload);
+           });*/
+
+      </script>
       <script>
 
-           function upload(event) {
+           /*function upload() {
                event.preventDefault();
-               var data = new FormData($('form').get(0));
+               var data = new FormData($('#file-upload-form').get(0));
+               console.log(data);
                $.ajax({
-                   url: $(this).attr('action'),
-                   type: $(this).attr('method'),
+                   //url: $(this).attr('action'),
+                   //type: $(this).attr('method'),
+                   url: {% url 'mainapp:upload' %},
+                   type: 'POST',
                    data: data,
                    cache: false,
                    processData: false,
@@ -123,16 +211,25 @@
                        alert(data);
                    },
                    error:function(request,status,error){
+                       alert("실패");
                        alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
                    }
                });
                return false;
            }
            $(function() {
-               $('form').submit(upload);
-           });
+               $('#file-upload-form').submit(upload);
+           });*/
 
       </script>
+
+
+      <form action="{% url 'mainapp:upload' %}" method="post" name="imageForm" id="file-upload-form" enctype="multipart/form-data" novalidate>{% csrf_token %}
+          <input type="file" name="uploadfile" id="id_file" />
+          <button type="submit" class="btn btn-primary" name="uploadfile" id='upload-btn' value="image">Upload</button>
+      </form>
+
+
 
       <script>
 
@@ -160,7 +257,7 @@
 
       </script>
   </section>
-
+{% comment %}
   <!-- Services -->
   <section class="content-section bg-primary text-white text-center" id="services">
     <div class="container">
@@ -210,7 +307,8 @@
       </div>
     </div>
   </section>
-{% comment %}
+
+
   <!-- Callout -->
   <section class="callout">
     <div class="container text-center">
